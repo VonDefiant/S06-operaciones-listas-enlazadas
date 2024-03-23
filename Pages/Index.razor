@@ -1,0 +1,82 @@
+﻿@page "/"
+@using BlazorListApp.Models
+
+<style>
+    body {
+        background-color: #151D28;
+        color: white;
+    }
+
+    .logo-container {
+        position: absolute;
+        top: 10px;
+        right: 100px;
+        width: 200px;
+        height: 200px;
+    }
+
+        .logo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+</style>
+
+<h3>Operaciones con Lista Enlazada</h3>
+
+<div class="logo-container">
+    <img src="/logogrupo.jpg" alt="Logo" />
+</div>
+
+<input @bind="valorNuevo" placeholder="Valor Nuevo" />
+
+<button @onclick="AgregarAlInicio">Agregar al Inicio</button>
+<button @onclick="AgregarAlFinal">Agregar al Final</button>
+<button @onclick="() => AgregarEnPosicion(6, valorNuevo)">Agregar en Posición 6</button>
+<button @onclick="() => AgregarEnPosicion(8, valorNuevo)">Agregar Antes de la Posición 9</button>
+<button @onclick="() => AgregarEnPosicion(7, valorNuevo)">Agregar Después de la Posición 6</button>
+<button @onclick="Buscar">Buscar</button>
+
+@if (lista.EHM != null)
+{
+    <p>Recorrido de la Lista:</p>
+    @MostrarLista(lista.EHM)
+}
+else
+{
+    <p>La lista está vacía.</p>
+}
+
+@code {
+    ListasEnlazadas lista = new ListasEnlazadas();
+    int valorNuevo;
+
+    private void AgregarAlInicio() => lista.AgregarAlInicio(valorNuevo);
+    private void AgregarAlFinal() => lista.AgregarAlFinal(valorNuevo);
+    private void AgregarEnPosicion(int posicion, int valor) => lista.AgregarEnPosicion(posicion, valor);
+
+    private void Buscar()
+    {
+        var resultadoBusqueda = lista.Buscar(valorNuevo);
+        if (resultadoBusqueda)
+        {
+            Console.WriteLine($"El valor {valorNuevo} fue encontrado.");
+        }
+        else
+        {
+            Console.WriteLine($"El valor {valorNuevo} no fue encontrado.");
+        }
+    }
+
+    private RenderFragment MostrarLista(NodoLista nodo) => builder =>
+    {
+        int secuencia = 0;
+        while (nodo != null)
+        {
+            builder.OpenElement(secuencia++, "div");
+            builder.AddContent(secuencia++, $"Valor: {nodo.Dato}");
+            builder.CloseElement();
+            nodo = nodo.Siguiente;
+        }
+    };
+}
